@@ -1,0 +1,5 @@
+// Set your Apple Developer Team ID here (Xcode → Settings → Accounts) to run on a real device.
+TEAM_ID=
+
+BUNDLE_ID=com.coolingcare.app
+APP_NAME=CoolingCare

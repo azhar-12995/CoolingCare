@@ -1,0 +1,28 @@
+rules_version = '2';
+
+// Order photos: only the customer who booked (and the admins) can see them.
+// Service images: public, uploaded by admins.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.get('phone_number', '') != ''
+        && request.auth.token.phone_number in
+           firestore.get(/databases/(default)/documents/config/roles).data.adminPhones;
+    }
+    function image() {
+      return request.resource.size < 3 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+    }
+
+    match /orders/{uid}/{orderId}/{file} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow create: if request.auth != null && request.auth.uid == uid && image();
+      allow update, delete: if false;
+    }
+
+    match /services/{file} {
+      allow read: if true;
+      allow write: if isAdmin() && image();
+      allow delete: if isAdmin();
+    }
+  }
+}

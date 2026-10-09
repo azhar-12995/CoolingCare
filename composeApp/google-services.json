@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "834596151541",
+    "project_id": "cooling-care-pasrur",
+    "storage_bucket": "cooling-care-pasrur.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834596151541:android:fdcb2cbaf93e2f20fa25bc",
+        "android_client_info": {
+          "package_name": "com.coolingcare.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN2pbYDs3FflbHIGFciSJubL22oDFyt4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

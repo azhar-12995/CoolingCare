@@ -1,0 +1,78 @@
+{
+ "cat_split_ac": [
+  320,
+  208
+ ],
+ "cat_refrigerator": [
+  336,
+  236
+ ],
+ "cat_cassette": [
+  336,
+  172
+ ],
+ "cat_vrf": [
+  328,
+  192
+ ],
+ "cat_commercial": [
+  336,
+  200
+ ],
+ "cat_installation": [
+  320,
+  192
+ ],
+ "svc_general": [
+  328,
+  240
+ ],
+ "svc_deep": [
+  328,
+  244
+ ],
+ "svc_gas": [
+  328,
+  248
+ ],
+ "svc_install": [
+  328,
+  252
+ ],
+ "svc_annual": [
+  324,
+  256
+ ],
+ "hero_technician": [
+  520,
+  428
+ ],
+ "detail_deep_clean": [
+  1180,
+  460
+ ],
+ "big_split_ac": [
+  1060,
+  560
+ ],
+ "big_fridge": [
+  640,
+  1400
+ ],
+ "big_cassette": [
+  760,
+  488
+ ],
+ "big_vrf": [
+  688,
+  848
+ ],
+ "welcome_scene": [
+  1520,
+  2072
+ ],
+ "tech_portrait": [
+  360,
+  384
+ ]
+}

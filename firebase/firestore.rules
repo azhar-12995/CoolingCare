@@ -1,0 +1,96 @@
+rules_version = '2';
+
+// Cooling Care — customers sign in with their phone number (Firebase Phone Auth).
+// Admins are the phone numbers listed in config/roles.adminPhones (edit in the Firebase console).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function authPhone() { return request.auth.token.get('phone_number', ''); }
+    function isAdmin() {
+      return signedIn() && authPhone() != ''
+        && authPhone() in get(/databases/$(database)/documents/config/roles).data.adminPhones;
+    }
+    function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
+    function str(v, max) { return v is string && v.size() <= max; }
+    function txt(v, max) { return v is map && str(v.en, max) && str(v.ur, max); }
+    function statuses() { return ['requested', 'confirmed', 'on_the_way', 'completed', 'cancelled']; }
+
+    // ---------- config ----------
+    match /config/roles {
+      allow read: if signedIn();
+      allow write: if false;                       // only from the console / admin SDK
+    }
+    match /config/business {
+      allow read: if true;                         // shop phone / WhatsApp / hours
+      allow write: if isAdmin()
+        && str(request.resource.data.phoneDisplay, 30) && str(request.resource.data.whatsapp, 20);
+    }
+
+    // ---------- sequential order numbers (CC-1001, CC-1002 …) ----------
+    match /counters/orders {
+      allow read: if signedIn();
+      allow update: if signedIn() && changed().hasOnly(['next'])
+        && request.resource.data.next == resource.data.next + 1;
+      allow create, delete: if false;
+    }
+
+    // ---------- service catalogue (admin opens / closes / edits) ----------
+    match /services/{id} {
+      allow read: if resource.data.active == true || isAdmin();
+      allow create, update: if isAdmin()
+        && txt(request.resource.data.title, 80) && txt(request.resource.data.short, 200)
+        && request.resource.data.category in ['ac', 'refrigeration', 'commercial']
+        && request.resource.data.active is bool && request.resource.data.sort is number
+        && request.resource.data.included is list && request.resource.data.included.size() <= 12;
+      allow delete: if isAdmin();
+    }
+
+    // ---------- customer profiles ----------
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.phone == authPhone()
+        && str(request.resource.data.name, 60) && request.resource.data.tokens is list
+        && request.resource.data.tokens.size() <= 10;
+      allow delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    // ---------- orders ----------
+    match /orders/{id} {
+      allow read: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+
+      allow create: if signedIn() && id.matches('CC-[0-9]+')
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.code == id
+        && request.resource.data.status == 'requested'
+        && str(request.resource.data.name, 60) && str(request.resource.data.phone, 20)
+        && str(request.resource.data.address, 300) && str(request.resource.data.issue, 1000)
+        && request.resource.data.photos is list && request.resource.data.photos.size() <= 3
+        && request.resource.data.history is list && request.resource.data.history.size() == 1
+        // only services that are open can be ordered
+        && get(/databases/$(database)/documents/services/$(request.resource.data.serviceId)).data.active == true;
+
+      allow update: if isAdmin() && request.resource.data.status in statuses()
+          && request.resource.data.uid == resource.data.uid
+        || (signedIn() && resource.data.uid == request.auth.uid && customerUpdate());
+
+      allow delete: if false;
+
+      function customerUpdate() {
+        let before = resource.data.status;
+        let after = request.resource.data.status;
+        return
+          // cancel a visit that has not started
+          (after == 'cancelled' && before in ['requested', 'confirmed']
+            && changed().hasOnly(['status', 'cancelReason', 'history', 'updatedAt']))
+          // ask for a different time (goes back to "requested" for the shop to confirm)
+          || (after == 'requested' && before in ['requested', 'confirmed']
+            && changed().hasOnly(['date', 'dateLabel', 'slotId', 'slot', 'status', 'history', 'updatedAt']))
+          // rate a finished visit
+          || (before == 'completed' && after == 'completed'
+            && changed().hasOnly(['rating', 'feedback', 'updatedAt']));
+      }
+    }
+  }
+}

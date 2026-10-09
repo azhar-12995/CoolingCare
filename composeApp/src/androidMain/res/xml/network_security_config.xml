@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Release: HTTPS only. Debug builds replace this file (src/androidDebug/res) to reach the local Firebase Emulator Suite. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

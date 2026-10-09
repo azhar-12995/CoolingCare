@@ -1,0 +1,40 @@
+[versions]
+agp = "8.13.2"
+kotlin = "2.2.21"
+composeMultiplatform = "1.9.3"
+material3 = "1.9.0"
+androidx-activity = "1.10.0"
+androidx-core = "1.15.0"
+lifecycle = "2.9.6"
+navigation = "2.9.1"
+coroutines = "1.10.2"
+serialization = "1.9.0"
+datetime = "0.7.1"
+gitlive = "2.7.0"
+googleServices = "4.4.3"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+gitlive-auth = { module = "dev.gitlive:firebase-auth", version.ref = "gitlive" }
+gitlive-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "gitlive" }
+gitlive-storage = { module = "dev.gitlive:firebase-storage", version.ref = "gitlive" }
+gitlive-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "gitlive" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
